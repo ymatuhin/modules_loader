@@ -1,3 +1,7 @@
+window.Modules.config({
+	base: '/example/'
+})
+
 var el = document.getElementById('rez')
 
 // последовательно
