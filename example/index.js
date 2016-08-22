@@ -1,5 +1,5 @@
 window.Modules.config({
-	base: '/example/'
+	base: './example/'
 })
 
 var el = document.getElementById('rez')
