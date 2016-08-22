@@ -1,0 +1,22 @@
+{
+  "name": "modules_loader",
+  "version": "1.0.0",
+  "description": "TODO: write something here",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ymatuhin/modules_loader.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ymatuhin/modules_loader/issues"
+  },
+  "homepage": "https://github.com/ymatuhin/modules_loader#readme"
+}
