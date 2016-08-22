@@ -1,1 +1,1 @@
-return { c: 1 }
+module.exports = { c: 1 }
