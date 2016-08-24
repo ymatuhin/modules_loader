@@ -32,9 +32,9 @@ function build() {
 		.pipe($.concat("loader.js"))
 		.pipe($.babel())
 		.pipe(gulp.dest(path.dist))
-		.pipe(gulp.dest(path.example))
 		.pipe($.uglifyjs())
 		.pipe($.rename("loader.min.js"))
+		.pipe(gulp.dest(path.example))
 		.pipe(gulp.dest(path.dist))
 }
 
