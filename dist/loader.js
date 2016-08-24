@@ -1,10 +1,11 @@
 'use strict';
 
 window.Modules = function () {
+
 	// variables
 	var modulesPromises = {};
 	var config = {
-		base: '',
+		root: '',
 		aliases: {},
 		maxWait: 15000
 	};
@@ -17,6 +18,8 @@ window.Modules = function () {
 		return new Error('Error while parsing module: ' + url + ', ' + e);
 	};
 
+	init();
+
 	function init() {
 		var attr = 'data-main';
 		var firstScript = document.querySelector('script[' + attr + ']');
@@ -27,24 +30,26 @@ window.Modules = function () {
 	}
 
 	function load(mainUrl) {
-		var arrayOfDep = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+		var dependencies = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+		var path = arguments[2];
 
-		var modulesToLoad = arrayOfDep.map(function (url) {
-			return loadModule(url);
+		var modulesToLoad = dependencies.map(function (url) {
+			return loadModule(url, path);
 		});
 		return Promise.all(modulesToLoad).then(function () {
-			return loadModule(mainUrl);
+			return loadModule(mainUrl, path);
 		});
 	}
 
-	function loadModule(inputUrl) {
-		var url = aliasesResolve(inputUrl, config.aliases);
-		console.log('# url', url);
+	function loadModule(inputUrl, path) {
+		var urlAliased = aliasesResolve(inputUrl, config.aliases);
+		var url = pathResolve(urlAliased, path);
+
 		if (modulesPromises[url]) return modulesPromises[url];
 
 		return modulesPromises[url] = new Promise(function (res, rej) {
-			ajaxGET(config.base + url, function (moduleText) {
-				var expModule = evalModule(url, moduleText.replace(/module\.exports\s?=/g, 'return '));
+			ajaxGET(config.root + url, function (moduleText) {
+				var expModule = evalModule(url, moduleText);
 
 				if (expModule && expModule.toString() === '[object Promise]') {
 					checkLongLoadingModules(expModule, url);
@@ -61,7 +66,10 @@ window.Modules = function () {
 
 	function evalModule(url, moduleText) {
 		try {
-			return new Function(moduleText)();
+			var module = { path: url.slice(0, url.lastIndexOf('/') + 1) };
+			var wrappedModuleText = wrapModuleText(moduleText);
+			new Function('module', wrappedModuleText)(module);
+			return module.exports;
 		} catch (e) {
 			throw parsingError(url, e);
 		}
@@ -74,6 +82,19 @@ window.Modules = function () {
 	}
 
 	// helpers
+	function wrapModuleText(moduleText) {
+		// to save relative path
+		return '\n\t\t(function(window) {\n\t\t\tvar Modules = {\n\t\t\t\tconfig: window.Modules.config,\n\t\t\t\tload: function (mn, dep, path) {\n\t\t\t\t\treturn window.Modules.load(mn, dep, module.path || path)\n\t\t\t\t}\n\t\t\t};\n\n\t\t\t' + moduleText + '\n\n\t\t})(window)\n\t';
+	}
+
+	function pathResolve(url) {
+		var path = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+
+		// absolute url
+		if (url[0] == '/') return url;
+		return path + url;
+	}
+
 	function aliasesResolve(url, aliases) {
 		var stop = false;
 		var newUrl = url;
@@ -118,8 +139,6 @@ window.Modules = function () {
 		}, config.maxWait);
 	}
 
-	// public api
-	init();
 	return {
 		load: load,
 		config: configuration

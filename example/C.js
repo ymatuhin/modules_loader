@@ -1,1 +1,1 @@
-module.exports = { c: 1 }
+module.exports = { c: 1, w: window.qwe }
