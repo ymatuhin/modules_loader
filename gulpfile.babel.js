@@ -2,6 +2,7 @@
 
 import gulp from 'gulp'
 const $ = require('gulp-load-plugins')()
+const BS = require('browser-sync').create()
 
 const path = {
 	dist: './dist/',
@@ -31,7 +32,20 @@ function watch() {
 	gulp.watch(path.lib, build)
 }
 
+function server() {
+	BS.init({
+		server: {
+			baseDir: path.example
+		}
+	})
+
+	gulp.watch(path.example + '**/*', BS.reload)
+}
+
 gulp.task('clean', clean)
 gulp.task('build', build)
 gulp.task('watch', watch)
+gulp.task('server', server)
+
 gulp.task('start', gulp.series(['clean', 'build', 'watch']))
+gulp.task('server', gulp.series(['clean', 'build', 'server', 'watch']))

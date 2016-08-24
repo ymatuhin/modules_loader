@@ -1,12 +1,17 @@
-Modules.config({
-	aliases: {
-		'~': './example/'
-	}
+// relative path inside module `a`
+Modules.load('relative/a.js').then(function(m) {
+	const relative = document.getElementById('relative')
+	relative.innerHTML = JSON.stringify(m)
 })
 
-var el = document.getElementById('rez')
+// with parallel
+Modules.load('parallel/a.js', ['parallel/b.js', 'parallel/c.js']).then(function(m) {
+	const parallel = document.getElementById('parallel')
+	parallel.innerHTML = JSON.stringify(m)
+})
 
-// последовательно
-Modules.load('A.js').then(function(m) {
-	el.innerHTML = JSON.stringify(m)
+// series
+Modules.load('series/a.js').then(function(m) {
+	const series = document.getElementById('series')
+	series.innerHTML = JSON.stringify(m)
 })
