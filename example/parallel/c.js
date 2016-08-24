@@ -1,1 +1,3 @@
-module.exports = { relativePath: true }
+"use strict";
+
+module.exports = { relativePath: true };

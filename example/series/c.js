@@ -1,1 +1,3 @@
-module.exports = { series: true }
+"use strict";
+
+module.exports = { series: true };

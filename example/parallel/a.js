@@ -1,1 +1,3 @@
-module.exports = { parallel: true }
+"use strict";
+
+module.exports = { parallel: true };
