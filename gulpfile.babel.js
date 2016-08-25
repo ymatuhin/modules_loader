@@ -32,8 +32,11 @@ function build() {
 		.pipe($.concat("loader.js"))
 		.pipe($.babel())
 		.pipe(gulp.dest(path.dist))
-		.pipe($.uglifyjs())
-		.pipe($.rename("loader.min.js"))
+		.pipe($.closureCompiler({
+			compilerPath: 'node_modules/google-closure-compiler/compiler.jar',
+			fileName: 'loader.min.js',
+			compilation_level: 'ADVANCED_OPTIMIZATIONS'
+		}))
 		.pipe(gulp.dest(path.example))
 		.pipe(gulp.dest(path.dist))
 }

@@ -51,6 +51,7 @@ window.Modules = function () {
 		return modulesPromises[url] = new Promise(function (resolve, reject) {
 			if (extension === 'js') return loadJS(url, resolve, reject);
 			if (extension === 'css') return loadCSS(url, resolve, reject);
+			if (extension === 'json') return loadJSON(url, resolve, reject);
 			return loadText(url, resolve, reject);
 		});
 	}
@@ -58,6 +59,16 @@ window.Modules = function () {
 	function loadText(url, resolve, reject) {
 		ajaxGET(url, function (moduleText) {
 			resolve(moduleText);
+		}, reject);
+	}
+
+	function loadJSON(url, resolve, reject) {
+		ajaxGET(url, function (moduleText) {
+			try {
+				resolve(JSON.parse(moduleText));
+			} catch (e) {
+				reject(e);
+			}
 		}, reject);
 	}
 
