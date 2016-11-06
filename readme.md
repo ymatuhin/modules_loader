@@ -6,9 +6,10 @@
 
 ## Примеры
 
+Поддерживается параллельная и последовательная загрузка. Если исходный файл не JavaScript, то возвращается его содержимое.
+
 ```javascript
 // relative path inside module "a"
-
 Modules.load('relative/a.js').then(function (m) {
 	document.getElementById('relative').innerHTML = JSON.stringify(m);
 });
